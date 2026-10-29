@@ -6379,7 +6379,7 @@ document.addEventListener('click', e => {
   e.preventDefault(); e.stopPropagation();
   const [k, x, y] = b.dataset.t.split(':');
   if (k === 'setup') return openSetup(parseHash() || {});
-  if (k === 'cancel') { document.getElementById('tsetup').classList.remove('on'); return; }
+  if (k === 'cancel') { document.getElementById('tsetup').classList.remove('on'); if (!TS || TS.meta.exited) { document.body.classList.remove('test'); render(); } return; }
   if (k === 'start') { if (TS) TS.meta.exited = false; }
   if (k === 'start') return startSession({ p: val('t-p'), study: val('t-study'), site: val('t-site'), start: val('t-start'), loc: 'b', card: 'blend', ix9: 'd', lang: rad('t-lang'), viewer: rad('t-viewer') });
   if (k === 'close') return closeMod();
@@ -6415,7 +6415,10 @@ window.addEventListener('popstate', () => { if (!TS || !document.body.classList.
   if (prev && prev.meta && !prev.meta.exited && prev.log.length) {
     const m = prev.meta; Object.assign(S.opt, { loc: 'b', card: m.card || 'blend', ix9: 'd', zones: false }); if (m.viewer) S.viewer = m.viewer; if (m.lang) DEMO.lang(m.lang); document.body.classList.add('test'); render.lk = null; LG('session.reload'); DEMO.jump(m.start || 'KAN');
     try { history.pushState({ t: 1 }, ''); } catch (e) {}
+    return;
   }
+  /* V3: the plain link opens session setup, so the moderator panel works without #test */
+  if (document.body.classList.contains('test')) openSetup({});
 })();
 </script>
 </body></html>
